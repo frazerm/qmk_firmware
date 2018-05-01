@@ -9,7 +9,8 @@
 
     #define DEFAULT_LAYER_SONGS { SONG(QWERTY_SOUND), \
                                   SONG(COLEMAK_SOUND), \
-                                  SONG(DVORAK_SOUND) \
+                                  SONG(DVORAK_SOUND), \
+                                  SONG(COIN_SOUND) \
                                 }
 #endif
 
