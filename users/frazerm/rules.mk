@@ -1,0 +1,1 @@
+SRC += frazerm.c calc.c calc_terminal.c

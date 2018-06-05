@@ -16,6 +16,9 @@
 
 #define MUSIC_MASK (keycode != KC_NO)
 
+#define CALCULATOR_ENABLE
+#define USER_PRINT
+
 /*
  * MIDI options
  */
@@ -40,4 +43,4 @@
 /* override number of MIDI tone keycodes (each octave adds 12 keycodes and allocates 12 bytes) */
 //#define MIDI_TONE_KEYCODE_OCTAVES 2
 
-#endif
+#endif //CONFIG_USER_H

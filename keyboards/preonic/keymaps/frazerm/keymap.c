@@ -16,29 +16,7 @@
 
 #include "preonic.h"
 #include "action_layer.h"
-
-#include <print.h>
-
-enum preonic_layers {
-  _QWERTY,
-  _COLEMAK,
-  _DVORAK,
-  _GAMING,
-  _WIN_MODS,
-  _LOWER,
-  _RAISE,
-  _ADJUST,
-};
-
-enum preonic_keycodes {
-  QWERTY = SAFE_RANGE,
-  COLEMAK,
-  DVORAK,
-  WIN_MODS,
-  LOWER,
-  RAISE,
-  GAMING,
-};
+#include "calc.h"
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -210,9 +188,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   {_______, _______, _______, _______, _______, CALC,     CALC,     _______, _______, _______, _______, _______}
 },
 
+[_CALC] = {
+  {XXXXXXX,   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX, XXXXXXX, KC_BSPC},
+  {XXXXXXX,   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_1,     KC_2,    KC_3,    CALC_PLS},
+  {CALC_EXIT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_4,     KC_5,    KC_6,    CALC_RET},
+  {XXXXXXX,   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, CALC_PLS, CALC_PLS, XXXXXXX,  KC_7,     KC_8,    KC_9,    CALC_MIN},
+  {XXXXXXX,   XXXXXXX, XXXXXXX, XXXXXXX, _______, KC_SPC,   KC_SPC,   _______,  KC_LEFT,  KC_0,    XXXXXXX, KC_RGHT}
+}
+
+
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  if (record->event.pressed  &&  process_calc_key_press(keycode))
+    return false;
+
   switch (keycode) {
         case QWERTY:
           if (record->event.pressed) {
@@ -243,6 +233,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             layer_invert(_WIN_MODS);
           }
           return false;
+          break;
+        case CALC:
+          if (record->event.pressed) {
+            calc_mode_enter();
+            layer_on(_CALC);
+          }
+          return false;
+          break;
+        case CALC_EXIT:
+          if (record->event.pressed) {
+            calc_mode_exit();
+            layer_off(_CALC);
+          }
           break;
         case LOWER:
           if (record->event.pressed) {
