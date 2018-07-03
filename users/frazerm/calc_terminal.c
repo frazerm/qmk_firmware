@@ -1,23 +1,32 @@
 #include "calc.h"
 
-#include <string.h>
-#include <print.h>
-
+static void calculate(void);
+static void print_float(float f);
 static bool shift_buffer_cursor(uint8_t shift);
 static bool delete_from_buffer(void);
 static bool append_to_buffer(char c);
 static char keycode_to_ascii_number(uint16_t keycode);
 static void pretty_print_buffer(void);
+static void pretty_print_token(struct token token);
+static void pretty_print_stack(struct token *stack, uint8_t stack_height);
 
 bool calc_mode = false;
 
-char buffer[CALC_BUFFER_LENGTH];
-uint8_t buffer_head   = 0;
-uint8_t buffer_cursor = 0;
+char            buffer[CALC_BUFFER_LENGTH];
+uint8_t         buffer_head                 = 0;
+uint8_t         buffer_cursor               = 0;
 
 const char keycode_to_ascii_lut[10] = {
     '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
 };
+
+void print_float(float f)
+{
+    char res[32];
+    sprintf(res, "%g", f);
+    uprintf("%s\n", res);
+    return;
+}
 
 void pretty_print_buffer(void)
 {
@@ -40,6 +49,43 @@ void pretty_print_buffer(void)
 
     uprint("\n");
     return;
+}
+
+void pretty_print_token(struct token token)
+{
+    switch (token.type)
+    {
+    case TOK_NUM:
+        print_float(token.val);
+        break;
+    case TOK_PLUS:
+        uprint("+\n");
+        break;
+    case TOK_MINUS:
+        uprint("-\n");
+        break;
+    case TOK_MUL:
+        uprint("*\n");
+        break;
+    case TOK_DIV:
+        uprint("/\n");
+        break;
+    case TOK_POW:
+        uprint("^\n");
+        break;
+    default:
+        uprintf("__%d\n", token.type);
+    }
+
+    return;
+}
+
+void pretty_print_stack(struct token *stack, uint8_t stack_height)
+{
+    for (int i = 0 ; i < stack_height ; i++)
+        pretty_print_token(stack[i]);
+
+    uprint("\n");
 }
 
 static char keycode_to_ascii_number(uint16_t keycode)
@@ -112,7 +158,7 @@ bool process_calc_key_press(uint16_t keycode)
     switch (keycode)
     {
     case CALC_RET:
-        // TODO: calculate
+        calculate();
         break;
     case CALC_PLS:
         if (append_to_buffer('+'))
@@ -196,4 +242,24 @@ void calc_mode_exit(void)
     uprint("calculator mode disabled\n");
     calc_mode = false;
     #endif
+}
+
+void calculate(void)
+{
+    uprint("calculate\n");
+
+    struct token stack[CALC_BUFFER_LENGTH];
+    uint8_t num_tokens = tokenise_buffer(buffer, buffer_head, stack);
+    uprintf("num tokens: %d\n", num_tokens);
+    uprint("=======\n");
+    pretty_print_stack(stack, num_tokens);
+    uprint("-------\n");
+    num_tokens = reduce_stack(stack, num_tokens);
+    uprintf("num tokens: %d\n", num_tokens);
+    uprint("-------\n");
+
+    
+
+    pretty_print_stack(stack, num_tokens);
+    uprint("=======\n");
 }

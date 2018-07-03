@@ -4,6 +4,10 @@
 #include "frazerm.h"
 #include "string.h"
 
+#include <print.h>
+#include <stdio.h>
+#include <math.h>
+
 #define CH_PLUS             43
 #define CH_MINUS            45
 #define CH_MUL              42
@@ -12,7 +16,6 @@
 #define CH_DOT              46
 
 #define CALC_BUFFER_LENGTH  32
-#define CALC_STACK_LENGTH   32
 
 enum token_type
 {
@@ -37,6 +40,13 @@ struct token
     float           val;
 };
 
+void calc_mode_enter(void);
+void calc_mode_exit(void);
+bool process_calc_key_press(uint16_t keycode);
+
+uint8_t tokenise_buffer(char* buffer, uint8_t buffer_length, struct token *stack);
+uint8_t reduce_stack(struct token *instack, uint8_t stack_size);
+
 inline bool is_number(char c)
 {
     return 48 <= c  &&  c <= 57;
@@ -46,11 +56,5 @@ inline bool is_op(struct token *token)
 {
     return (TOK_PLUS <= token->type)  &&  (token->type <= TOK_POW);
 }
-
-void calc_mode_enter(void);
-void calc_mode_exit(void);
-bool process_calc_key_press(uint16_t keycode);
-
-uint8_t tokenise_buffer(char* buffer, struct token *stack);
 
 #endif //FRAZERM_CALC_H
