@@ -25,8 +25,8 @@ uint8_t is_left_hand;
 #define _RAISE 2
 #define _ADJUST 3
 
-#define LOWER  LT(_LOWER, KC_SPC)
-#define RAISE  LT(_RAISE, KC_SPC)
+#define LOWER  MO(_LOWER)
+#define RAISE  MO(_RAISE)
 #define ADJUST MO(_ADJUST)
 
 #define HYPER  ALL_T(KC_ESC)
@@ -60,8 +60,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                          KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_QUOT, \
   HYPER,   KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                          KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_ENT,  \
   KC_LSFT, KC_NUBS, KC_Z,    KC_X,    KC_C,    KC_V,    KC_NO,       KC_NO,   KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, \
-  KC_LCTL, KC_LGUI, KC_LALT, KC_LCTL, KC_NO,   KC_SPC,  KC_NO,       KC_NO,   KC_SPC,  KC_NO,   KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, \
-                                               LOWER,   KC_BSPC,     KC_BSPC, RAISE \
+  KC_LCTL, KC_LGUI, KC_LALT, KC_LCTL, LOWER,   KC_SPC,  KC_NO,       KC_NO,   KC_SPC,  RAISE,   KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, \
+                                               KC_SPC,  KC_BSPC,     KC_BSPC, KC_SPC \
 ),
 
 [_LOWER] = LAYOUT( \
